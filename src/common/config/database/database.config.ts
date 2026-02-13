@@ -1,6 +1,9 @@
 import { registerAs } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
 import { IsNumber, IsString, validateSync } from 'class-validator';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('DatabaseConfig');
 
 class DatabaseVariables {
   @IsString()
@@ -31,6 +34,10 @@ export default registerAs('database', () => {
   if (errors.length > 0) {
     throw new Error(`Database Config Validation Error: ${errors.toString()}`);
   }
+
+  logger.log(
+    `✅ Database Config loaded. Connection: [${validatedConfig.DB_HOST}:${validatedConfig.DB_PORT}], DB: [${validatedConfig.POSTGRES_DB}]`,
+  );
 
   return {
     host: validatedConfig.DB_HOST,

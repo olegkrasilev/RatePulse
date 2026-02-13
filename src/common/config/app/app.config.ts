@@ -1,6 +1,9 @@
 import { registerAs } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
+import { Logger } from '@nestjs/common';
 import { IsEnum, IsNumber, Max, Min, validateSync } from 'class-validator';
+
+const logger = new Logger('AppConfig');
 
 enum Environment {
   Development = 'development',
@@ -35,6 +38,10 @@ export default registerAs('app', () => {
   if (errors.length > 0) {
     throw new Error(`App Config Validation Error: ${errors.toString()}`);
   }
+
+  logger.log(
+    `✅ App Config loaded. Env: [${validatedConfig.NODE_ENV}], Port: [${validatedConfig.PORT}]`,
+  );
 
   return {
     env: validatedConfig.NODE_ENV,
