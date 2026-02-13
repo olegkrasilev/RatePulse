@@ -1,26 +1,10 @@
 import { registerAs } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
-import { IsNumber, IsString, validateSync } from 'class-validator';
+import { validateSync } from 'class-validator';
 import { Logger } from '@nestjs/common';
+import { DatabaseVariables } from './database.schema';
 
 const logger = new Logger('DatabaseConfig');
-
-class DatabaseVariables {
-  @IsString()
-  DB_HOST: string;
-
-  @IsNumber()
-  DB_PORT: number;
-
-  @IsString()
-  POSTGRES_USER: string;
-
-  @IsString()
-  POSTGRES_PASSWORD: string;
-
-  @IsString()
-  POSTGRES_DB: string;
-}
 
 export default registerAs('database', () => {
   const validatedConfig = plainToInstance(DatabaseVariables, process.env, {

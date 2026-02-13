@@ -1,25 +1,10 @@
 import { registerAs } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
 import { Logger } from '@nestjs/common';
-import { IsEnum, IsNumber, Max, Min, validateSync } from 'class-validator';
+import { AppVariables } from './app.schema';
 
 const logger = new Logger('AppConfig');
-
-enum Environment {
-  Development = 'development',
-  Production = 'production',
-  Test = 'test',
-}
-
-class AppVariables {
-  @IsEnum(Environment)
-  NODE_ENV: Environment;
-
-  @IsNumber()
-  @Min(0)
-  @Max(65535)
-  PORT: number;
-}
 
 export default registerAs('app', () => {
   const envVars = {
