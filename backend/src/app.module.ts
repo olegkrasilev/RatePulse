@@ -5,6 +5,7 @@ import { envValidationSchema } from './config/env.validation';
 import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { CatchEverythingFilter } from './common/filters/catch-everything-filter';
 
 @Module({
   imports: [
@@ -23,6 +24,10 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
   ],
   controllers: [],
   providers: [
+    {
+      provide: APP_FILTER,
+      useClass: CatchEverythingFilter,
+    },
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,

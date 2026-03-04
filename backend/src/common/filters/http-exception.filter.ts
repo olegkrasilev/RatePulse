@@ -3,7 +3,6 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
@@ -15,12 +14,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : new InternalServerErrorException().getStatus();
+    const status = exception.getStatus();
 
-    this.logger.error({ error: exception }, `HTTP Exception caught: ${status}`);
+    this.logger.warn(
+      {
+        method: request.method,
+        path: request.url,
+        statusCode: status,
+        response: exception.getResponse(),
+        ip: request.ip,
+        referer: request.get('referer'),
+      },
+      'HTTP Exception',
+    );
 
     response.status(status).json({
       statusCode: status,
