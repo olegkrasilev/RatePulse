@@ -23,6 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         statusCode: status,
         response: exception.getResponse(),
         ip: request.ip,
+        requestId: request.requestId,
         referer: request.get('referer'),
       },
       'HTTP Exception',

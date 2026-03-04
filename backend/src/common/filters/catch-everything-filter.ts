@@ -38,6 +38,7 @@ export class CatchEverythingFilter implements ExceptionFilter {
         method: request.method,
         path: request.url,
         body: request.body as unknown,
+        requestId: request.requestId,
         query: request.query,
         params: request.params,
         exceptionName:
