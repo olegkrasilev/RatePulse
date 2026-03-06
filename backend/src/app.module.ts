@@ -8,9 +8,11 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { CatchEverythingFilter } from './common/filters/catch-everything-filter';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './modules/user/users.module';
 
 @Module({
   imports: [
+    UsersModule,
     HealthModule,
     ConfigModule.forRoot({
       isGlobal: true,
