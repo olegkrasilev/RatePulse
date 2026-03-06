@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
     });
 
     if (existingUser) {
-      throw new Error('User with this email already exists');
+      throw new UserAlreadyExistsError(email);
     }
 
     const user = this.usersRepository.create({
