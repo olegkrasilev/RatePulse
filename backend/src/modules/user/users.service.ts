@@ -28,6 +28,13 @@ export class UsersService {
       name,
     });
 
+    const savedUser = await this.usersRepository.save(user);
+
+    this.logger.info(
+      { userId: savedUser.id, email: savedUser.email },
+      'user created successfully',
+    );
+
     return this.usersRepository.save(user);
   }
 }
