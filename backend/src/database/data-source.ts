@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { User } from 'src/modules/user/user.entity';
+import { User } from '../modules/user/user.entity';
 import { DataSource } from 'typeorm';
 
 export default new DataSource({
