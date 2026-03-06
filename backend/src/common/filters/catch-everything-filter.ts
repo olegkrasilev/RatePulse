@@ -8,6 +8,7 @@ import {
 import { HttpAdapterHost } from '@nestjs/core';
 import { Request } from 'express';
 import { PinoLogger } from 'nestjs-pino';
+import { UserAlreadyExistsError } from 'src/modules/user/errors/user-already-exists.error';
 
 @Catch()
 export class CatchEverythingFilter implements ExceptionFilter {
@@ -21,16 +22,25 @@ export class CatchEverythingFilter implements ExceptionFilter {
 
     const ctx = host.switchToHttp();
 
-    const httpStatus =
+    let httpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
+    let message = 'Internal server error';
+
+    if (exception instanceof UserAlreadyExistsError) {
+      httpStatus = HttpStatus.CONFLICT;
+      message = exception.message;
+    } else if (exception instanceof HttpException) {
+      httpStatus = exception.getStatus();
+    }
 
     const request = ctx.getRequest<Request>();
     const responseBody = {
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()) as string,
+      message,
     };
 
     this.logger.error(
