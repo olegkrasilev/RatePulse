@@ -82,4 +82,28 @@ describe('Users (e2e)', () => {
       }),
     );
   });
+
+  it('POST /api/users should return 409 for duplicate email', async () => {
+    const payload = {
+      name: 'Oleg',
+      email: 'oleg@test.com',
+    };
+
+    await request(app.getHttpServer())
+      .post('/api/users')
+      .send(payload)
+      .expect(201);
+
+    const response = await request(app.getHttpServer())
+      .post('/api/users')
+      .send(payload)
+      .expect(409);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        statusCode: 409,
+        message: expect.stringContaining('already exists'),
+      }),
+    );
+  });
 });
