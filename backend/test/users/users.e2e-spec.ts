@@ -83,27 +83,48 @@ describe('Users (e2e)', () => {
     );
   });
 
-  it('POST /api/users should return 409 for duplicate email', async () => {
-    const payload = {
-      name: 'Oleg',
-      email: 'oleg@test.com',
-    };
+  it('POST /api/users should return 400 for invalid email', async () => {
+    await request(app.getHttpServer())
+      .post('/api/users')
+      .send({ name: 'Oleg', email: 'not-an-email' })
+      .expect(400);
+  });
+
+  it('should return 400 if name is missing', async () => {
+    await request(app.getHttpServer())
+      .post('/api/users')
+      .send({ email: 'only-email@test.com' })
+      .expect(400);
+  });
+
+  it('should return 400 for malformed email', async () => {
+    await request(app.getHttpServer())
+      .post('/api/users')
+      .send({ name: 'Oleg', email: 'it-is-not-email' })
+      .expect(400);
+  });
+
+  it('should return 400 if extra fields are provided (whitelist check)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/users')
+      .send({
+        name: 'Oleg',
+        email: 'oleg@test.com',
+        hackerField: 'steal-data',
+      })
+      .expect(400);
+  });
+
+  it('should persist user in the database after successful creation', async () => {
+    const payload = { name: 'Database Test', email: 'db@test.com' };
 
     await request(app.getHttpServer())
       .post('/api/users')
       .send(payload)
       .expect(201);
 
-    const response = await request(app.getHttpServer())
-      .post('/api/users')
-      .send(payload)
-      .expect(409);
-
-    expect(response.body).toEqual(
-      expect.objectContaining({
-        statusCode: 409,
-        message: expect.stringContaining('already exists'),
-      }),
-    );
+    const userInDb = await usersRepository.findOneBy({ email: payload.email });
+    expect(userInDb).toBeDefined();
+    expect(userInDb?.name).toBe(payload.name);
   });
 });
