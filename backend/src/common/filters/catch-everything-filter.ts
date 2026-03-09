@@ -8,7 +8,7 @@ import {
 import { HttpAdapterHost } from '@nestjs/core';
 import { Request } from 'express';
 import { PinoLogger } from 'nestjs-pino';
-import { UserAlreadyExistsError } from 'src/modules/user/errors/user-already-exists.error';
+import { UserAlreadyExistsError } from '../../modules/user/errors/user-already-exists.error';
 
 @Catch()
 export class CatchEverythingFilter implements ExceptionFilter {
