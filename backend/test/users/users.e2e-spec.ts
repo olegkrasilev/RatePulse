@@ -127,4 +127,25 @@ describe('Users (e2e)', () => {
     expect(userInDb).toBeDefined();
     expect(userInDb?.name).toBe(payload.name);
   });
+
+  //   it('POST /api/users should normalize name and email (trim and lowercase)', async () => {
+  //     const payload = {
+  //       name: '   Oleg   ',
+  //       email: '  OLEG@test.com  ',
+  //     };
+
+  //     const response = await request(app.getHttpServer())
+  //       .post('/api/users')
+  //       .send(payload)
+  //       .expect(201);
+
+  //     expect(response.body.name).toBe('Oleg');
+  //     expect(response.body.email).toBe('oleg@test.com');
+
+  //     const userInDb = await usersRepository.findOneBy({
+  //       email: 'oleg@test.com',
+  //     });
+  //     expect(userInDb).toBeDefined();
+  //     expect(userInDb?.name).toBe('Oleg');
+  //   });
 });
