@@ -9,6 +9,7 @@ import { CatchEverythingFilter } from './common/filters/catch-everything-filter'
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/user/users.module';
+import { databaseConfig } from './database/database.config';
 
 @Module({
   imports: [
@@ -25,16 +26,7 @@ import { UsersModule } from './modules/user/users.module';
         },
       },
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST ?? 'localhost',
-      port: Number(process.env.DB_PORT ?? 5432),
-      username: process.env.DB_USER ?? 'postgres',
-      password: process.env.DB_PASSWORD ?? 'postgres',
-      database: process.env.DB_NAME ?? 'ratepulse',
-      autoLoadEntities: true,
-      synchronize: false,
-    }),
+    TypeOrmModule.forRoot(databaseConfig),
   ],
   controllers: [],
   providers: [
