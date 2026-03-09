@@ -10,6 +10,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/user/users.module';
 import { databaseConfig } from './database/database.config';
+import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter';
 
 @Module({
   imports: [
@@ -33,6 +34,10 @@ import { databaseConfig } from './database/database.config';
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: TypeOrmExceptionFilter,
     },
     {
       provide: APP_FILTER,

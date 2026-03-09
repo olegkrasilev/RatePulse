@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PinoLogger } from 'nestjs-pino';
-import { Repository, QueryFailedError } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 
@@ -19,39 +19,21 @@ export class UsersService {
     });
 
     if (existingUser) {
-      this.logger.warn({ email }, 'user creation failed: email already exists');
-
+      this.logger.warn(
+        { email },
+        'user creation failed: email already exists (pre-check)',
+      );
       throw new UserAlreadyExistsError(email);
     }
 
-    const user = this.usersRepository.create({
-      name,
-      email,
-    });
+    const user = this.usersRepository.create({ name, email });
+    const savedUser = await this.usersRepository.save(user);
 
-    try {
-      const savedUser = await this.usersRepository.save(user);
+    this.logger.info(
+      { userId: savedUser.id, email: savedUser.email },
+      'user created successfully',
+    );
 
-      this.logger.info(
-        { userId: savedUser.id, email: savedUser.email },
-        'user created successfully',
-      );
-
-      return savedUser;
-    } catch (error) {
-      if (
-        error instanceof QueryFailedError &&
-        (error as any).driverError?.code === '23505'
-      ) {
-        this.logger.warn(
-          { email },
-          'user creation failed: duplicate email constraint',
-        );
-
-        throw new UserAlreadyExistsError(email);
-      }
-
-      throw error;
-    }
+    return savedUser;
   }
 }
