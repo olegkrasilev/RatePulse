@@ -5,6 +5,7 @@ import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,14 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('api');
+  const config = new DocumentBuilder()
+    .setTitle('RatePulse API')
+    .setDescription('Backend API documentation')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();
