@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -10,13 +11,14 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 255 })
   email: string;
 
-  @Column()
+  @Column({ length: 255 })
+  @Exclude()
   password_hash: string;
 
-  @Column()
+  @Column({ length: 50 })
   name: string;
 
   @CreateDateColumn()
