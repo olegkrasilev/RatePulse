@@ -14,17 +14,17 @@ export class UsersService {
   ) {}
 
   async createUser(name: string, email: string): Promise<User> {
-    const existingUser = await this.usersRepository.findOne({
-      where: { email },
-    });
+    // const existingUser = await this.usersRepository.findOne({
+    //   where: { email },
+    // });
 
-    if (existingUser) {
-      this.logger.warn(
-        { email },
-        'user creation failed: email already exists (pre-check)',
-      );
-      throw new UserAlreadyExistsError(email);
-    }
+    // if (existingUser) {
+    //   this.logger.warn(
+    //     { email },
+    //     'user creation failed: email already exists (pre-check)',
+    //   );
+    //   throw new UserAlreadyExistsError(email);
+    // }
 
     const user = this.usersRepository.create({ name, email });
     const savedUser = await this.usersRepository.save(user);

@@ -27,10 +27,17 @@ import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filte
         },
       },
     }),
-    TypeOrmModule.forRoot(databaseConfig),
+    TypeOrmModule.forRoot({
+      ...databaseConfig,
+      autoLoadEntities: true,
+    }),
   ],
   controllers: [],
   providers: [
+    {
+      provide: APP_FILTER,
+      useClass: CatchEverythingFilter,
+    },
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
@@ -38,10 +45,6 @@ import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filte
     {
       provide: APP_FILTER,
       useClass: TypeOrmExceptionFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: CatchEverythingFilter,
     },
   ],
 })
