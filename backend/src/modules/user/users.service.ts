@@ -7,6 +7,7 @@ import { User } from './user.entity';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PASSWORD_SALT_ROUNDS } from '../../common/constants/password/password-salt';
+import { CreateUserResponseDto } from './dto/create-user-respose.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
     private readonly logger: PinoLogger,
   ) {}
 
-  async createUser(dto: CreateUserDto): Promise<User> {
+  async createUser(dto: CreateUserDto): Promise<CreateUserResponseDto> {
     const { email, name, password } = dto;
     const existingUser = await this.usersRepository.findOne({
       where: { email },

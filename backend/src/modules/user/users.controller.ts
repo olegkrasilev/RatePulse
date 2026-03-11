@@ -3,13 +3,14 @@ import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
-import { User } from './user.entity';
-import { ROUTES } from 'src/common/constants/routes/routes';
+import { ROUTES } from '../../common/constants/routes/routes';
+import { CreateUserResponseDto } from './dto/create-user-respose.dto';
 
 @ApiTags('Users')
 @Controller(ROUTES.USERS)
@@ -24,7 +25,7 @@ export class UsersController {
   })
   @ApiCreatedResponse({
     description: 'The user has been successfully created.',
-    type: User,
+    type: CreateUserResponseDto,
   })
   @ApiBadRequestResponse({
     description: 'Validation failed (e.g., invalid email or weak password).',
@@ -32,7 +33,10 @@ export class UsersController {
   @ApiConflictResponse({
     description: 'A user with this email address already exists.',
   })
-  async createUser(@Body() dto: CreateUserDto): Promise<User> {
+  @ApiInternalServerErrorResponse({
+    description: 'Server-side error. Please try again later.',
+  })
+  async createUser(@Body() dto: CreateUserDto): Promise<CreateUserResponseDto> {
     return this.usersService.createUser(dto);
   }
 }
