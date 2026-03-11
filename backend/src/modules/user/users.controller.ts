@@ -10,6 +10,6 @@ export class UsersController {
 
   @Post()
   async createUser(@Body() dto: CreateUserDto): Promise<User> {
-    return this.usersService.createUser(dto.name, dto.email);
+    return this.usersService.createUser(dto);
   }
 }

@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PinoLogger } from 'nestjs-pino';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +15,8 @@ export class UsersService {
     private readonly logger: PinoLogger,
   ) {}
 
-  async createUser(name: string, email: string): Promise<User> {
+  async createUser(dto: CreateUserDto): Promise<User> {
+    const { email, name, password_hash } = dto;
     const existingUser = await this.usersRepository.findOne({
       where: { email },
     });
@@ -26,7 +29,12 @@ export class UsersService {
       throw new UserAlreadyExistsError(email);
     }
 
-    const user = this.usersRepository.create({ name, email });
+    const passwordHash = await bcrypt.hash(password_hash, 10);
+    const user = this.usersRepository.create({
+      name,
+      email,
+      password_hash: passwordHash,
+    });
     const savedUser = await this.usersRepository.save(user);
 
     this.logger.info(
