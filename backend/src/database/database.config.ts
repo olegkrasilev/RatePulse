@@ -6,4 +6,5 @@ export const databaseConfig = {
   password: process.env.DB_PASSWORD ?? 'postgres',
   database: process.env.DB_NAME ?? 'ratepulse',
   synchronize: false,
+  autoLoadEntities: true,
 };

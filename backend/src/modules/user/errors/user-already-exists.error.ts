@@ -1,5 +1,5 @@
-import { ERROR_MESSAGES } from 'src/common/errors/error-messages';
-import { ERROR_CODES } from 'src/common/errors/errors';
+import { ERROR_MESSAGES } from '../../../common/errors/error-messages';
+import { ERROR_CODES } from '../../../common/errors/errors';
 
 export class UserAlreadyExistsError extends Error {
   public readonly code = ERROR_CODES.USER_ALREADY_EXISTS;
