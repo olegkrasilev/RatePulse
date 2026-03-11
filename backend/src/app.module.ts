@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/user/users.module';
 import { databaseConfig } from './database/database.config';
 import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -26,6 +27,14 @@ import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filte
           target: 'pino-pretty',
         },
       },
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60,
+          limit: 10,
+        },
+      ],
     }),
     TypeOrmModule.forRoot({
       ...databaseConfig,
