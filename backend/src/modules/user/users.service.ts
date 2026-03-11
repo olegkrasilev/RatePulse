@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 import { CreateUserDto } from './dto/create-user.dto';
+import { PASSWORD_SALT_ROUNDS } from '../../common/constants/password/password-salt';
 
 @Injectable()
 export class UsersService {
@@ -29,7 +30,7 @@ export class UsersService {
       throw new UserAlreadyExistsError(email);
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS);
     const user = this.usersRepository.create({
       name,
       email,
