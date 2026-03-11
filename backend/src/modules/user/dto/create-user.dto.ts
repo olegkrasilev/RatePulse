@@ -14,6 +14,8 @@ export class CreateUserDto {
     example: 'user',
     minLength: 2,
     maxLength: 50,
+    description: 'User full name. Only letters, spaces and hyphens allowed.',
+    pattern: '^[a-zA-Zа-яА-ЯёЁ\\s-]+$',
   })
   @IsString()
   @IsNotEmpty()
@@ -31,6 +33,8 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'user@test.com',
     maxLength: 255,
+    description: 'Unique email address',
+    format: 'email',
   })
   @IsEmail()
   @IsNotEmpty()
@@ -45,6 +49,9 @@ export class CreateUserDto {
     example: 'strongpassword123',
     minLength: 8,
     maxLength: 128,
+    description: 'User password',
+    format: 'password',
+    writeOnly: true,
   })
   @IsString()
   @MinLength(8, { message: 'Password must be at least 8 characters' })
