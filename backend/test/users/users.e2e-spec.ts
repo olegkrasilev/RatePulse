@@ -59,7 +59,7 @@ describe('Users (e2e)', () => {
 
     expect(response.body).toEqual(
       expect.objectContaining({
-        id: expect.any(Number),
+        id: expect.any(String),
         name: 'Oleg',
         email: 'oleg@test.com',
       }),
