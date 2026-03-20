@@ -7,18 +7,18 @@ import { CatchEverythingFilter } from './common/filters/catch-everything-filter'
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/user/users.module';
-import { databaseConfig } from './database/database.config';
 import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { validate } from './config/env.validation';
+import { databaseConfig } from './database/database.config';
 
 @Module({
   imports: [
     UsersModule,
     HealthModule,
     ConfigModule.forRoot({
-      isGlobal: true,
       validate,
+      isGlobal: true,
       cache: true,
     }),
     ThrottlerModule.forRoot({
