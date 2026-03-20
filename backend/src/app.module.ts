@@ -12,6 +12,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { validate } from './config/env.validation';
 import { databaseConfig } from './database/database.config';
 import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
+import { isTest } from './common/constants/env';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
       validate,
       isGlobal: true,
       cache: true,
+      envFilePath: isTest ? '.env.test' : '.env',
     }),
     ThrottlerModule.forRoot({
       throttlers: [

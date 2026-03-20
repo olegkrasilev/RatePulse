@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Основная база для разработки (dev)
   postgres:
     image: postgres:16
     container_name: ratepulse_postgres
@@ -13,6 +14,19 @@ services:
       - '${DB_PORT}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  # Выделенная база для тестов (e2e)
+  postgres_test:
+    image: postgres:16
+    container_name: ratepulse_postgres_test
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ratepulse_test
+    ports:
+      - '5433:5432' # Тесты всегда будут стучаться на 5433
+    # Volumes для тестов не используем, чтобы данные были эфемерными
 
 volumes:
   postgres_data:
