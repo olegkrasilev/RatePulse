@@ -6,10 +6,13 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { EnvConfig } from './config/env.validation';
+import morgan from 'morgan';
+import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   const configService = app.get(ConfigService<EnvConfig, true>);
   const port = configService.get('PORT', { infer: true });
@@ -18,6 +21,10 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors();
   app.use(compression());
+
+  if (nodeEnv === 'development') {
+    app.use(morgan('dev'));
+  }
 
   app.useGlobalPipes(
     new ValidationPipe({

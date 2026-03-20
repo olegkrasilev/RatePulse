@@ -3,6 +3,7 @@ import {
   Catch,
   ArgumentsHost,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { Request, Response } from 'express';
@@ -16,6 +17,7 @@ interface PostgresDriverError {
 
 @Catch(QueryFailedError)
 export class TypeOrmExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(TypeOrmExceptionFilter.name);
   constructor() {}
 
   catch(exception: QueryFailedError, host: ArgumentsHost) {
@@ -41,14 +43,14 @@ export class TypeOrmExceptionFilter implements ExceptionFilter {
         httpStatus = HttpStatus.BAD_REQUEST;
         break;
       default:
-      // this.logger.error(
-      //   {
-      //     code: pgErrorCode,
-      //     detail: driverError.detail,
-      //     query: exception.query,
-      //   },
-      //   'Unhandled Database Error',
-      // );
+        this.logger.error(
+          {
+            code: pgErrorCode,
+            detail: driverError.detail,
+            query: exception.query,
+          },
+          'Unhandled Database Error',
+        );
     }
 
     response.status(httpStatus).json({

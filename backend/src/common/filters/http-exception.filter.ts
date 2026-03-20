@@ -3,11 +3,13 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(HttpExceptionFilter.name);
   constructor() {}
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -15,18 +17,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
 
-    // this.logger.warn(
-    //   {
-    //     method: request.method,
-    //     path: request.url,
-    //     statusCode: status,
-    //     response: exception.getResponse(),
-    //     ip: request.ip,
-    //     requestId: request.requestId,
-    //     referer: request.get('referer'),
-    //   },
-    //   'HTTP Exception',
-    // );
+    this.logger.warn(
+      {
+        method: request.method,
+        path: request.url,
+        statusCode: status,
+        response: exception.getResponse(),
+        ip: request.ip,
+        requestId: request.requestId,
+        referer: request.get('referer'),
+      },
+      'HTTP Exception',
+    );
 
     response.status(status).json({
       statusCode: status,
