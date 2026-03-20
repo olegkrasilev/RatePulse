@@ -1,8 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { HealthModule } from './modules/health/health.module';
 import { ConfigModule } from '@nestjs/config';
-import { envValidationSchema } from './config/env.validation';
-import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { CatchEverythingFilter } from './common/filters/catch-everything-filter';
@@ -12,6 +10,7 @@ import { UsersModule } from './modules/user/users.module';
 import { databaseConfig } from './database/database.config';
 import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { validate } from './config/env.validation';
 
 @Module({
   imports: [
@@ -19,14 +18,8 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     HealthModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      validationSchema: envValidationSchema,
-    }),
-    LoggerModule.forRoot({
-      pinoHttp: {
-        transport: {
-          target: 'pino-pretty',
-        },
-      },
+      validate,
+      cache: true,
     }),
     ThrottlerModule.forRoot({
       throttlers: [

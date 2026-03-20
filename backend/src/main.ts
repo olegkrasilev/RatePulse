@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { Logger } from 'nestjs-pino';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
@@ -9,8 +8,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const logger = app.get(Logger);
-  app.useLogger(logger);
+
   app.use(helmet());
   app.use(cors());
   app.use(compression());
@@ -32,5 +30,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
   await app.listen(process.env.PORT ?? 3000);
+
+  const logger = new Logger('Bootstrap');
+  logger.log(
+    `🚀 Application is running on: http://localhost:${process.env.PORT}`,
+  );
+  logger.log(
+    `📖 Swagger docs available at: http://localhost:${process.env.PORT}/docs`,
+  );
+  logger.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
 }
 void bootstrap();

@@ -1,15 +1,38 @@
-import * as Joi from 'joi';
+import { z } from 'zod';
+import { Logger } from '@nestjs/common';
 
-export const envValidationSchema = Joi.object({
-  // APP
-  NODE_ENV: Joi.string()
-    .valid('development', 'production', 'test')
+const logger = new Logger('EnvValidation');
+
+export const envSchema = z.object({
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
     .default('development'),
-  PORT: Joi.number().default(3000),
-  // DATABASE
-  DB_HOST: Joi.string().required(),
-  DB_PORT: Joi.number().required(),
-  DB_USER: Joi.string().required(),
-  DB_PASSWORD: Joi.string().required(),
-  DB_NAME: Joi.string().required(),
+  PORT: z.coerce.number().default(3000),
+  DB_HOST: z.string(),
+  DB_PORT: z.coerce.number(),
+  DB_USER: z.string(),
+  DB_PASSWORD: z.string(),
+  DB_NAME: z.string(),
 });
+
+export type EnvConfig = z.infer<typeof envSchema>;
+
+export function validate(config: Record<string, unknown>) {
+  const result = envSchema.safeParse(config);
+
+  if (!result.success) {
+    const { fieldErrors } = result.error.flatten();
+
+    logger.error('❌ Environment validation failed:');
+
+    Object.entries(fieldErrors).forEach(([field, errors]) => {
+      logger.error(`Variable [${field}]: ${errors?.join(', ')}`);
+    });
+
+    throw new Error('Invalid .env configuration');
+  }
+
+  logger.log('✅ Environment variables validated successfully');
+
+  return result.data;
+}

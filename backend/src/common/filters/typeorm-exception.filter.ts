@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { Request, Response } from 'express';
-import { PinoLogger } from 'nestjs-pino';
 
 interface PostgresDriverError {
   code: string;
@@ -17,7 +16,7 @@ interface PostgresDriverError {
 
 @Catch(QueryFailedError)
 export class TypeOrmExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: PinoLogger) {}
+  constructor() {}
 
   catch(exception: QueryFailedError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -42,14 +41,14 @@ export class TypeOrmExceptionFilter implements ExceptionFilter {
         httpStatus = HttpStatus.BAD_REQUEST;
         break;
       default:
-        this.logger.error(
-          {
-            code: pgErrorCode,
-            detail: driverError.detail,
-            query: exception.query,
-          },
-          'Unhandled Database Error',
-        );
+      // this.logger.error(
+      //   {
+      //     code: pgErrorCode,
+      //     detail: driverError.detail,
+      //     query: exception.query,
+      //   },
+      //   'Unhandled Database Error',
+      // );
     }
 
     response.status(httpStatus).json({
