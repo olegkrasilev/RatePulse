@@ -9,6 +9,7 @@ import {
 import { HttpAdapterHost } from '@nestjs/core';
 import { Request } from 'express';
 import { UserAlreadyExistsError } from '../../modules/user/errors/user-already-exists.error';
+import { isDevelopment, isProduction } from '../constants/env';
 
 @Catch()
 export class CatchEverythingFilter implements ExceptionFilter {
@@ -40,11 +41,15 @@ export class CatchEverythingFilter implements ExceptionFilter {
       message = exception.message;
     }
 
-    const responseBody = {
+    const responseBodyDevelopment = {
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()) as string,
       message,
+    };
+
+    const responseBodyProduction = {
+      statusCode: httpStatus,
     };
 
     // 2. Логирование (убираем небезопасные присваивания)
@@ -71,6 +76,12 @@ export class CatchEverythingFilter implements ExceptionFilter {
       );
     }
 
-    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+    if (isDevelopment) {
+      httpAdapter.reply(ctx.getResponse(), responseBodyDevelopment, httpStatus);
+    }
+
+    if (isProduction) {
+      httpAdapter.reply(ctx.getResponse(), responseBodyProduction, httpStatus);
+    }
   }
 }

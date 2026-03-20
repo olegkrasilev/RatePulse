@@ -31,16 +31,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
       'HTTP Exception',
     );
 
-    if (isDevelopment()) {
+    if (isDevelopment) {
       response.status(status).json({
         statusCode: status,
         timestamp: new Date().toISOString(),
         path: request.url,
         stack: exception instanceof Error ? exception.stack : null,
+        requestId: request.requestId,
       });
     }
 
-    if (isProduction()) {
+    if (isProduction) {
       response.status(status).json({
         statusCode: status,
       });

@@ -53,7 +53,7 @@ export class TypeOrmExceptionFilter implements ExceptionFilter {
         );
     }
 
-    if (isDevelopment()) {
+    if (isDevelopment) {
       response.status(httpStatus).json({
         statusCode: httpStatus,
         message: errorMessage,
@@ -64,7 +64,7 @@ export class TypeOrmExceptionFilter implements ExceptionFilter {
       });
     }
 
-    if (isProduction()) {
+    if (isProduction) {
       response.status(httpStatus).json({
         statusCode: httpStatus,
       });

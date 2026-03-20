@@ -55,7 +55,7 @@ import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor, // Теперь NestJS сам создаст экземпляр
+      useClass: LoggingInterceptor,
     },
   ],
 })
