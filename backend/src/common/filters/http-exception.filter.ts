@@ -6,6 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { isDevelopment, isProduction } from '../constants/env';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -30,10 +31,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
       'HTTP Exception',
     );
 
-    response.status(status).json({
-      statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-    });
+    if (isDevelopment()) {
+      response.status(status).json({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        stack: exception instanceof Error ? exception.stack : null,
+      });
+    }
+
+    if (isProduction()) {
+      response.status(status).json({
+        statusCode: status,
+      });
+    }
   }
 }

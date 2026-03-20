@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { Request, Response } from 'express';
+import { isDevelopment, isProduction } from '../constants/env';
 
 interface PostgresDriverError {
   code: string;
@@ -18,7 +19,6 @@ interface PostgresDriverError {
 @Catch(QueryFailedError)
 export class TypeOrmExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(TypeOrmExceptionFilter.name);
-  constructor() {}
 
   catch(exception: QueryFailedError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -53,11 +53,21 @@ export class TypeOrmExceptionFilter implements ExceptionFilter {
         );
     }
 
-    response.status(httpStatus).json({
-      statusCode: httpStatus,
-      message: errorMessage,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-    });
+    if (isDevelopment()) {
+      response.status(httpStatus).json({
+        statusCode: httpStatus,
+        message: errorMessage,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        stack: exception instanceof Error ? exception.stack : null,
+        requestId: request.requestId,
+      });
+    }
+
+    if (isProduction()) {
+      response.status(httpStatus).json({
+        statusCode: httpStatus,
+      });
+    }
   }
 }
