@@ -4,10 +4,13 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
+import sonarjs from 'eslint-plugin-sonarjs';
 
 export default tseslint.config(
   {
     ignores: ['eslint.config.mjs'],
+    plugins: { sonarjs },
     settings: {
       'import/resolver': {
         typescript: true,
@@ -19,6 +22,8 @@ export default tseslint.config(
   ...tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettierRecommended,
   importPlugin.flatConfigs.recommended,
+  eslintPluginUnicorn.configs.recommended,
+
   {
     languageOptions: {
       globals: {
@@ -34,6 +39,7 @@ export default tseslint.config(
   },
   {
     rules: {
+      'unicorn/prevent-abbreviations': 'off',
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/explicit-module-boundary-types': 'error',
