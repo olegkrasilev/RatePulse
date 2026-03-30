@@ -6,6 +6,16 @@ import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import sonarjs from 'eslint-plugin-sonarjs';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import { FlatCompat } from '@eslint/eslintrc';
+import { fixupConfigRules } from '@eslint/compat';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
 
 export default tseslint.config(
   {
@@ -23,6 +33,9 @@ export default tseslint.config(
   eslintPluginPrettierRecommended,
   importPlugin.flatConfigs.recommended,
   eslintPluginUnicorn.configs.recommended,
+  ...fixupConfigRules(
+    compat.extends('plugin:promise/recommended', 'plugin:n/recommended'),
+  ),
 
   {
     languageOptions: {
@@ -39,6 +52,7 @@ export default tseslint.config(
   },
   {
     rules: {
+      'n/no-missing-import': 'off',
       'unicorn/prevent-abbreviations': 'off',
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/explicit-function-return-type': 'error',
@@ -66,6 +80,16 @@ export default tseslint.config(
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
+      ],
+      'padding-line-between-statements': [
+        'error',
+        {
+          blankLine: 'always',
+          prev: '*',
+          next: ['return', 'function', 'if', 'export', 'switch'],
+        },
+        { blankLine: 'always', prev: ['if', 'switch'], next: '*' },
+        { blankLine: 'always', prev: ['const', 'let'], next: 'expression' },
       ],
     },
   },
