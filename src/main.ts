@@ -14,7 +14,7 @@ async function bootstrap(): Promise<void> {
 
   logger.log(`🚀 Application is running in [${env.toUpperCase()}] mode`);
   logger.log(`📡 Listening on: http://localhost:${port}`);
-  logger.log(`📂 Database Host: ${configService.get('DB_HOST')}`);
+  logger.log(`📂 Database Host: ${configService.get('DB_NAME')}`);
   await app.listen(port);
 }
 
