@@ -8,6 +8,7 @@ import { environmentValidationSchema } from './config/validation/env.validation'
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
       isGlobal: true,
       load: [appConfig, databaseConfig],
       validationSchema: environmentValidationSchema,
