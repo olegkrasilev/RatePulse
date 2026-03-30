@@ -22,6 +22,6 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": false
   }
 }
