@@ -10,3 +10,5 @@ async function bootstrap(): Promise<void> {
 
 // eslint-disable-next-line unicorn/prefer-top-level-await
 void bootstrap();
+
+const test: any = 1;
