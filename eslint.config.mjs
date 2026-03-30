@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { FlatCompat } from '@eslint/eslintrc';
 import { fixupConfigRules } from '@eslint/compat';
+import pluginJest from 'eslint-plugin-jest';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,7 +35,11 @@ export default tseslint.config(
   importPlugin.flatConfigs.recommended,
   eslintPluginUnicorn.configs.recommended,
   ...fixupConfigRules(
-    compat.extends('plugin:promise/recommended', 'plugin:n/recommended'),
+    compat.extends(
+      'plugin:promise/recommended',
+      'plugin:n/recommended',
+      'plugin:jest/recommended',
+    ),
   ),
 
   {
