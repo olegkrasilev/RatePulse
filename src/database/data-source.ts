@@ -1,8 +1,11 @@
+import path from 'node:path';
+
 import { DataSource } from 'typeorm';
 
 import databaseConfig from '../config/database/database.config';
 
 const dbParams = databaseConfig();
+const rootPath = process.cwd();
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -12,7 +15,7 @@ export const AppDataSource = new DataSource({
   password: dbParams.password,
   database: dbParams.database,
   logging: dbParams.logging,
-  entities: ['dist/**/*.entity.js'],
-  migrations: ['dist/migrations/*.js'],
+  entities: [path.join(rootPath, 'src/**/*.entity{.ts,.js}')],
+  migrations: [path.join(rootPath, 'src/database/migrations/*{.ts,.js}')],
   synchronize: false,
 });

@@ -58,6 +58,7 @@ export default tseslint.config(
   {
     rules: {
       'n/no-missing-import': 'off',
+      'unicorn/filename-case': 'off',
       'unicorn/prevent-abbreviations': 'off',
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/explicit-function-return-type': 'error',
